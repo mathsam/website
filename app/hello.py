@@ -5,6 +5,7 @@ from flask.ext.moment import Moment
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField
 from wtforms.validators import Required
+from main import tk_quote
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'hard to guess string'
@@ -32,12 +33,27 @@ def index():
 def research():
     return render_template('index.html')
 
-@app.route('/pricer')
+class NameForm(Form):
+    name   = StringField('Ticket, (e.g., AAPL, FB, YHOO)', validators=[Required()])
+    submit = SubmitField('Submit')
+
+@app.route('/pricer', methods=['GET', 'POST'])
 def pricer():
-    return render_template('index.html')
-
-
-
+    form = NameForm()
+    if form.validate_on_submit():
+        name = form.name.data.upper()
+        price = tk_quote.stock_query(name)
+        if(price != None):
+            session['price'] = price 
+            session['name']  = name
+            form.name.data = ''
+        else:
+            flash('Wrong ticket!')
+            session['name'] = None
+            session['price'] = None
+            form.name.data = ''
+        return redirect(url_for('pricer'))
+    return render_template('pricer.html', form=form, ticket=session.get('name'), price=session.get('price'))
 
 if __name__ == '__main__':
     manager.run()

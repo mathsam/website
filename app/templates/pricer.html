@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}Option pricer{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    <h1>A Monte Carlo option pricer</h1>
+</div>
+{{ wtf.quick_form(form) }}
+
+  <div class="body">
+    <h1> {% if ticket %}
+            {{ ticket }} lastest price is {{ price }}
+         {% else %}
+            Lastest quote
+         {% endif %}
+ </h1>
+  </div>
+{% endblock %}
