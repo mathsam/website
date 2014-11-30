@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Research - Junyi Chai{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>Research interest</h1>
+</div>
+<div class="container">
+<p>I am interested in geophysical fluid dynamics for various flows in terrestrial and planetary atmospheres, and in Earth's oceans. Particularly, I focus on building theoretical understandings. Following Isaac's approach, I try to build such an understanding by two steps: first, use simple theories to understand idealized model simulations; and second, use more comprehensive model simulations to understand observations. Currently, my strength is within the first step. My toolkit includes idealized models such as pseudo-spectral models for solving primitive equations and quasi-geostrophic equations, and theories such as linear instability theory, wave-mean flow interaction theory, and various theories on two-dimensional turbulence. Eventually, I will move on to the second step, familiarizing myself with more comprehensive general circulation models and observations.</p>
+
+<h2>Past and ongoing projects</h2>
+<ul>
+<li><p><b>Extratropical eddy scale</b>: Baroclinic eddies largely control the day-to-day weathers and large scale circulations in mid-latitudes. The eddy scale is important in understanding many properties of the eddies. For example, a scaling for eddy diffusivity can be U*L, where U is a velocity scale and L is a length scale for eddies. We studies the relationship between eddy scale and criticality, which is a non-dimensional parameter relating together horizontal temperature gradient and vertical stability. When criticality varies near one, we show that there exists a weakly nonlinear regime in which the eddy scale increases with criticality without involving an inverse cascade. The quasi-geostrophic instability of Charney problem is revisited. It is demonstrated that both the horizontal and vertical scales of the most unstable wave depend on criticality, and simple estimates for the two scales are obtained. This leads to a new estimate for eddy scale.
+</p>
+<div class="thumbnail">
+  <img src="{{ url_for('static',filename="eddy_scale.png") }}">
+    <div class="caption">
+      <p>A comparision between eddy scale estimate vs. numerical simulation results. (Left) Eddy scale estimate from Held and Larichev (1996) and (right) our new estimate. It is clear that our estimate agrees better with simulations for various criticality ξ.</p>
+    </div>
+</div>
+</li>
+<li><p><b>Atmospheric dynamics on gas gaint planets</b>: 
+</p>
+<div class="thumbnail">
+  <img src="{{ url_for('static',filename="jupiter_simulation.png") }}">
+    <div class="caption">
+      <p>A high resolution Jupiter's atmosphere simulation. Left shows the zonal wind, and right shows relative vorticity. We reproduced multiple jets and coherent vortices between jets in this simulation, which is similar to the real Jupiter's atmosphere.</p>
+    </div>
+</div>
+</li>
+</ul>
+
+</div><!-- container -->
+{% endblock %}

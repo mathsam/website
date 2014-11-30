@@ -7,6 +7,7 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import Required, NumberRange, ValidationError
 from main import tk_quote
 from main import black_scholes 
+import numpy as np
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just a empty string'
@@ -32,7 +33,7 @@ def index():
 
 @app.route('/research')
 def research():
-    return render_template('index.html')
+    return render_template('research.html')
 
 class NameForm(Form):
 #    name   = StringField('Ticket, (e.g., AAPL, FB, YHOO)', 
@@ -67,32 +68,30 @@ class NameForm(Form):
 def pricer():
     form = NameForm()
     if form.validate_on_submit():
-        """name = form.name.data.upper()
-        price = tk_quote.stock_query(name)
-        if(price != None):
-            session['price'] = price 
-            session['name']  = name
-            form.name.data = ''
-        else:
-            flash('Wrong ticket!')
-            session['name'] = None
-            session['price'] = None
-            form.name.data = ''
-        return redirect(url_for('pricer'))
-    return render_template('pricer.html', form=form, ticket=session.get('name'), price=session.get('price'))"""
         optype = form.optype.data
-        volatility = form.volatility.data
-        expiration = form.expiration.data
-        spot       = form.spot.data
-        strike     = form.strike.data
-        interest_rate= form.interest_rate.data
-        value = black_scholes.BlackScholes(optype[0],float(spot),float(strike),float(expiration),float(interest_rate),float(volatility))
-        session['value'] = str(value)
+        volatility = float(form.volatility.data)
+        expiration = float(form.expiration.data)
+        spot       = float(form.spot.data)
+        strike     = float(form.strike.data)
+        interest_rate= float(form.interest_rate.data)
+        value = black_scholes.BlackScholes(optype[0], spot, strike,
+                        expiration, interest_rate, volatility)
+        session['value'] = str(round(value,2))
         session['name']  = optype 
+        spot_list  = np.linspace(spot/2,spot*1.5,10)
+        spot_value_list = [(it_spot, black_scholes.BlackScholes(optype[0], 
+               it_spot, strike, expiration, 
+               interest_rate, volatility)) for it_spot in spot_list]
+        session['spot_value_list']  = spot_value_list
     else:
         session['value'] = None
         session['name']  = None 
-    return render_template('pricer.html', form=form, ticket=session.get('name'), price=session.get('value')) 
+        session['spot_list']  = None
+        session['value_list'] = None
+    return render_template('pricer.html', form=form, 
+                           ticket     = session.get('name'),
+                           price      = session.get('value'),
+                           spot_value_list = session.get('spot_value_list')) 
 
 
 if __name__ == '__main__':
