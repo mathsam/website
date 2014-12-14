@@ -7,6 +7,7 @@ from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import Required, NumberRange, ValidationError
 from main import tk_quote
 from main import black_scholes 
+from main.american_put_pricer import american_put
 import numpy as np
 
 app = Flask(__name__)
@@ -38,8 +39,11 @@ def research():
 class NameForm(Form):
 #    name   = StringField('Ticket, (e.g., AAPL, FB, YHOO)', 
 #                         validators=[Required()])
-    optype = SelectField('Call or Put', choices=[('call','call'),('put','put')],
+    call_or_put = SelectField('Call or Put', choices=[('call','call'),('put','put')],
                          validators=[Required(),])
+    optype = SelectField('European or American', 
+                     choices=[('European','European'),('American','American')],
+                     validators=[Required(),])
     def check_is_float(form, field):
         if field.data is None:
             raise ValidationError('This field is required')
@@ -68,20 +72,27 @@ class NameForm(Form):
 def pricer():
     form = NameForm()
     if form.validate_on_submit():
-        optype = form.optype.data
+        call_or_put = form.call_or_put.data
+        optype      = form.optype.data
         volatility = float(form.volatility.data)
         expiration = float(form.expiration.data)
         spot       = float(form.spot.data)
         strike     = float(form.strike.data)
         interest_rate= float(form.interest_rate.data)
-        value = black_scholes.BlackScholes(optype[0], spot, strike,
-                        expiration, interest_rate, volatility)
-        session['value'] = str(round(value,2))
-        session['name']  = optype 
+        session['name']  = call_or_put 
         spot_list  = np.linspace(spot/2,spot*1.5,10)
-        spot_value_list = [(it_spot, black_scholes.BlackScholes(optype[0], 
-               it_spot, strike, expiration, 
-               interest_rate, volatility)) for it_spot in spot_list]
+        if call_or_put[0] == 'p' and optype[0] == 'E':
+            value = american_put(volatility, interest_rate,
+                   0, expiration, strike, spot, 5000)
+            spot_value_list = [(it_spot, american_put(volatility, interest_rate,
+                   0, expiration, strike, it_spot, 1000)) for it_spot in spot_list]
+        else:
+            value = black_scholes.BlackScholes(call_or_put[0], spot, strike,
+                        expiration, interest_rate, volatility)
+            spot_value_list = [(it_spot, black_scholes.BlackScholes(call_or_put[0], 
+                   it_spot, strike, expiration, 
+                   interest_rate, volatility)) for it_spot in spot_list]
+        session['value'] = str(round(value,2))
         session['spot_value_list']  = spot_value_list
     else:
         session['value'] = None
