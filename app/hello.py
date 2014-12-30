@@ -37,6 +37,19 @@ def index():
 def research():
     return render_template('research.html')
 
+"""
+class HisVolForm(Form):
+    def check_if_ticket_exist(form, field):
+        if field.data is None:
+            raise ValidationError('This field is required')
+        try:
+            
+
+
+    ticket = StringField('Ticket, (e.g., AAPL, FB, YHOO)',
+                         validators=[check_if_ticket_exist])
+"""
+
 class NameForm(Form):
 #    name   = StringField('Ticket, (e.g., AAPL, FB, YHOO)', 
 #                         validators=[Required()])
@@ -54,19 +67,34 @@ class NameForm(Form):
             raise ValidationError('Please input a number')
         except ValueError:
             raise ValidationError('Please input a number')
+
+    def check_pd(form, field):
+        """
+        check if positive definite (>0)
+        """
+        value = float(field.data)
         if value <= 0.0:
             raise ValidationError('Must be larger than 0')
 
+    def check_psd(form, field):
+        """
+        check if positive semi definite (>=0)
+        """
+        value = float(field.data)
+        if value < 0.0:
+            raise ValidationError('Must be no less than 0')
+
+
     volatility = StringField('Volatility (annualized)',
-                         validators=[check_is_float]) 
+                         validators=[check_is_float, check_pd]) 
     expiration = StringField('Expiration (in year)',
-                         validators=[check_is_float]) 
+                         validators=[check_is_float, check_pd]) 
     spot = StringField('Spot price',
-                         validators=[check_is_float]) 
+                         validators=[check_is_float, check_pd]) 
     strike = StringField('Strike price',
-                         validators=[check_is_float]) 
+                         validators=[check_is_float, check_pd]) 
     interest_rate = StringField('Interest rate % (in percentage)',
-                         validators=[check_is_float], default='0.25') 
+                         validators=[check_is_float, check_psd], default='0.25') 
     submit = SubmitField('Submit')
 
 @app.route('/pricer', methods=['GET', 'POST'])
