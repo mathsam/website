@@ -1,3 +1,52 @@
+def plot_time_line(t, y, div_id, title='', xlabel='', ylabel=''):
+    """
+    return a string which renders time line plot for web broser
+    
+    INPUTS:
+        t: list of Timestamp objects
+        y: list/numpy array of numbers
+    """
+    google_chart = u"""
+    <script type="text/javascript" src="https://www.google.com/jsapi?autoload={'modules':[{'name':'visualization','version':'1','packages':['annotationchart']}]}"></script>
+    <script type='text/javascript'>
+    google.load('visualization', '1', {'packages':['annotationchart']});
+    google.setOnLoadCallback(drawChart);
+    function drawChart() {
+    var data = new google.visualization.DataTable();
+    data.addColumn('date', '%s');
+    data.addColumn('number', '%s');
+
+    data.addRows([
+    """ %(xlabel, ylabel)
+
+    #NOTICE: in javascript, Jan is 0, Feb is 1, ...
+    # so need to do month-1
+    for ti, yi in zip(t, y):
+        google_chart += u"""
+          [ new Date(%d, %d, %d), %s],""" %(ti.year, ti.month-1, ti.day, str(yi))
+
+    google_chart += u"""
+    ]);
+
+    var chart = new google.visualization.AnnotationChart(document.getElementById('%s'));
+
+    var options = {
+      displayAnnotations: true,
+    };
+
+    chart.draw(data, options);
+    }
+    </script>
+    """ %div_id
+
+    google_chart += u"""
+    <div class="container-fluid">
+    <div id="%s"></div>
+    </div>""" %div_id
+
+    return google_chart
+    
+
 def plot_line(x, y, div_id, title='', xlabel='', ylabel=''):
     """
     return a string which renders x-y line plot for web browser
@@ -16,7 +65,7 @@ def plot_line(x, y, div_id, title='', xlabel='', ylabel=''):
         {{ example_chart | safe }}
     """
 
-    google_plot = u"""
+    google_chart = u"""
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
     google.load('visualization', '1', {'packages':['corechart']});
@@ -26,12 +75,12 @@ def plot_line(x, y, div_id, title='', xlabel='', ylabel=''):
          var data = google.visualization.arrayToDataTable(["""
           
 
-    google_plot += u"""['%s', '%s'],""" %(xlabel, ylabel)
+    google_chart += u"""['%s', '%s'],""" %(xlabel, ylabel)
 
     for xi, yi in zip(x,y):
-        google_plot += """[%s, %s],""" %(str(xi), str(yi))
+        google_chart += """[%s, %s],""" %(str(xi), str(yi))
 
-    google_plot += u"""]);
+    google_chart += u"""]);
 
       var options = {
         title: "%s", 
@@ -48,9 +97,10 @@ def plot_line(x, y, div_id, title='', xlabel='', ylabel=''):
     }
     </script>""" %(title, ylabel, xlabel, div_id)
 
-    google_plot += u"""
+    google_chart += u"""
     <div class="container-fluid">
-    <div id="%s"></div></div>
-    </div>""" %div_id
+    <div id="%s"></div>
+    </div>
+    """ %div_id
 
-    return google_plot
+    return google_chart

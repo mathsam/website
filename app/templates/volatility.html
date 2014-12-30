@@ -1,15 +1,16 @@
 {% extends "financial_analysis_base.html" %}
 
 {% block web_app %}
+
   <script type="text/javascript">
-      document.getElementById("pricer").setAttribute("class","active")
+      document.getElementById("volatility").setAttribute("class","active")
   </script>
 
   {{ wtf.quick_form(form) }}
 
   <div class="body">
     <h2> {% if ticket %}
-           {{ ticket }} price is <span class="label label-success"> {{ price }} </span>
+         <span class="label label-success"> {{ ticket }}</span> Historical Volatility <small>(annualized, in percentage)</small>
 
          {% else %}
             Waiting for inputs 
@@ -17,6 +18,6 @@
     </h2>
     
     {% if ticket %}
-      {{ spot_vs_price_plot | safe }}
+      {{ vol_chart | safe }}
     {% endif %}
 {% endblock %}

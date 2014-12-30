@@ -8,8 +8,13 @@ from wtforms.validators import Required, NumberRange, ValidationError
 from main import tk_quote
 from main import black_scholes 
 from main.american_put_pricer import american_put
-from main.plot_tools import plot_line
+from main.plot_tools import plot_line, plot_time_line
 import numpy as np
+
+import sys
+sys.path.append('/media/junyic/Work/Courses/4th_year/SoftwareEngineering/Project/UltraFinance/')
+from data_analysis.volatility import get_hist_vol
+
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'just a empty string'
@@ -37,22 +42,8 @@ def index():
 def research():
     return render_template('research.html')
 
-"""
-class HisVolForm(Form):
-    def check_if_ticket_exist(form, field):
-        if field.data is None:
-            raise ValidationError('This field is required')
-        try:
-            
 
-
-    ticket = StringField('Ticket, (e.g., AAPL, FB, YHOO)',
-                         validators=[check_if_ticket_exist])
-"""
-
-class NameForm(Form):
-#    name   = StringField('Ticket, (e.g., AAPL, FB, YHOO)', 
-#                         validators=[Required()])
+class PricerForm(Form):
     call_or_put = SelectField('Call or Put', choices=[('call','call'),('put','put')],
                          validators=[Required(),])
     optype = SelectField('European or American', 
@@ -99,7 +90,7 @@ class NameForm(Form):
 
 @app.route('/pricer', methods=['GET', 'POST'])
 def pricer():
-    form = NameForm()
+    form = PricerForm()
     if form.validate_on_submit():
         call_or_put = form.call_or_put.data
         optype      = form.optype.data
@@ -141,6 +132,38 @@ def pricer():
                            spot_value_list = session.get('spot_value_list'),
                            spot_vs_price_plot = session.get('chart_html')) 
 
+
+class HisVolForm(Form):
+    def check_if_ticket_exist(form, field):
+        if field.data is None:
+            raise ValidationError('This field is required')
+        try:
+            ticket = field.data.upper()
+            vol, vol_date = get_hist_vol(ticket)
+            session['ticket'] = ticket 
+            form.vol = vol
+            form.vol_date = vol_date
+        except ValueError:
+            raise ValidationError('Sorry, ticket does not exist in database')
+
+    ticket = StringField('Ticket (e.g., AAPL, FB, YHOO in S&P 500)',
+                         validators=[check_if_ticket_exist])
+    submit = SubmitField('Submit')
+
+
+@app.route('/volatility', methods=['GET', 'POST'])
+def volatility():
+    form = HisVolForm()
+    if form.validate_on_submit():
+        session['ticket'] = form.ticket.data.upper()
+        session['vol_chart'] = plot_time_line(form.vol_date,
+                                              form.vol*100.0,
+                        'vol_chart','Historical volatility (%)','Date','HV %')
+    else:
+        session['ticket'] = None
+    return render_template('volatility.html', form=form, 
+                           ticket     = session.get('ticket'),
+                           vol_chart  = session.get('vol_chart')) 
 
 if __name__ == '__main__':
     manager.run()
