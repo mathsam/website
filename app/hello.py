@@ -97,7 +97,8 @@ def pricer():
         session['spot_value_list']  = spot_value_list
         spot_price_chart_html = plot_line(spot_list,
                             [y for (tmp, y) in spot_value_list],
-                            'Spot vs. price for' + optype + call_or_put,
+                            'chart_spot_vs_price',
+                            'Spot vs. price for ' + optype + ' ' + call_or_put,
                             'Spot',
                             'Price')
         session['chart_html'] = spot_price_chart_html

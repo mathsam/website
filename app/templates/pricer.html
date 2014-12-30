@@ -15,44 +15,6 @@
     </h1>
     {{ spot_vs_price_plot | safe }}
 
-            <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-            <script type="text/javascript">
-
-              // Load the Visualization API and the ColumnChart package.
-              google.load('visualization', '1', {'packages':['corechart']});
-
-              // Set a callback to run when the Google Visualization API is loaded.
-              google.setOnLoadCallback(drawChart);
-
-              // Callback that creates and populates a data table, 
-              // instantiates the pie chart, passes in the data and
-              // draws it.
-              function drawChart() {
-                var data = google.visualization.arrayToDataTable([
-                    ['Spot', 'Option price'],
-                    {%- for it_spot, it_value in spot_value_list %}
-                    [{{ it_spot }}, {{ it_value }}],
-                    {%- endfor %}
-                ]);
-
-                var options = {
-                    title: "Option price vs. spot",
-                    curveType: 'function',
-                    vAxis: { title: 'Option price', 
-                             viewWindow:{min:0}
-                           },
-                    hAxis: { title: 'Spot'},
-                }
-
-              var chart = new google.visualization.LineChart(
-                           document.getElementById('chart_div'));
-              chart.draw(data, options);
-             }
-            </script>
-    <div class="container-fluid">
-    <div id="chart_div"></div></div>
-  </div>
-
          {% else %}
             Waiting for inputs 
          {% endif %}
