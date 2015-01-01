@@ -10,14 +10,23 @@
 
   <div class="body">
     <h2> {% if ticket %}
-         <span class="label label-success"> {{ ticket }}</span> Historical Volatility <small>(annualized, in percentage)</small>
+         <p><span class="label label-success"> {{ ticket }}</span></p>
+         <p>Historical Volatility <small>(annualized, in percentage)</small></p>
 
          {% else %}
-            Waiting for inputs 
+            <p>Waiting for inputs</p>
          {% endif %}
     </h2>
     
     {% if ticket %}
       {{ vol_chart | safe }}
+      <h2>Adjusted close price</h2>
+      {{ adj_chart | safe }}
+    <h2>    </h2>
+   
+    <form method="post" class="form" role="form"> 
+        <input class="btn btn-default" id="clear_chart" name="clear_chart" type="submit" value="Clear chart">
+    </form>
     {% endif %}
+    
 {% endblock %}
