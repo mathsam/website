@@ -154,12 +154,13 @@ class HisVolForm(Form):
             if field.data.upper() in ticket_set:
                 raise ValidationError('Ticket already exists')
             elif len(ticket_set) >= 5:
-                raise ValidationError('Total number of tickets must <= 5')
+                raise ValidationError('Total number of tickets must <= 5. Please \
+                                       Clear chart first!')
 
         try:
-            ticket = field.data.upper()
+            ticket = str(field.data.upper())
             vol, vol_date, adj_close = get_hist_vol(ticket)
-            form.vol = 100*vol
+            form.vol = [100*vol_it for vol_it in vol]
             form.vol_date  = vol_date
             form.adj_close = adj_close
         except ValueError:
@@ -187,7 +188,6 @@ def volatility():
     except KeyError:
         pass
 
-    print session.get('tickets'), session.get('ylabels')
     if form.validate_on_submit():
         if session.get('tickets') is None:
             session['tickets'] = form.ticket.data.upper()
