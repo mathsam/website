@@ -221,5 +221,9 @@ def volatility():
                            vol_chart = session.get('vol_chart'),
                            adj_chart = session.get('adj_chart')) 
 
+@app.route('/doc_fin')
+def doc_fin():
+    return render_template('financial_doc.html')
+
 if __name__ == '__main__':
     manager.run()

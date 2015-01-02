@@ -8,7 +8,7 @@
 <ul class="nav nav-tabs">
   <li role="presentation" id="pricer"><a href="{{ url_for('.pricer') }}">Option pricer</a></li>
   <li role="presentation" id="volatility"><a href="{{ url_for('.volatility') }}">Volatility Analysis</a></li>
-  <li role="presentation" id="doc_fin"><a href="#">Documentation</a></li>
+  <li role="presentation" id="doc_fin"><a href="{{ url_for('.doc_fin')  }}">Documentation</a></li>
 </ul>
 
 {% block web_app %}

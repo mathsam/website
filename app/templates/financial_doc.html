@@ -1,0 +1,25 @@
+{% extends "financial_analysis_base.html" %}
+
+{% block web_app %}
+
+  <script type="text/javascript">
+      document.getElementById("doc_fin").setAttribute("class","active")
+  </script>
+  
+  <body>
+  <h2>Option pricer <a href=https://github.com/mathsam/option_analysis><small>github.com/mathsam/option_analysis</small></a></h2>
+  <p>A suites of tools in C++ doing option pricing using Monte Carlo simulation. Includes random number generation, geometric brownian motion generation, linear algebra, least square Monte Carlo classes and etc.</p>
+  <h2>UltraFinance <a href=https://github.com/wjlei1990/UltraFinance><small>github.com/wjlei1990/UltraFinance</small></a></h2>
+  <p>A suites of tools in Python which scrapes stock and option data from internet, maintains a local MySQL database, and provides a set of APIs for easy data access.</p>
+  </p>
+  <h2>Web apps</h2>
+  <p>Web applications in this website are built using the above tools as back end. The front end is built using mainly Flask web-framework and a variety of technologies including javascript, Redis, simplekv, google chart and etc.</p>
+    <div class="thumbnail">
+    <img src="{{ url_for('static',filename="web_app_design.png") }}">
+      <div class="caption">
+      <p>Illustration of the architectural designs used in Option Pricer and Volatility Analysis web applications. The C++ library is interfaced with Python by using Ctypes. MySQL database is updated daily by a separate process.</p>
+      </div>
+    </div>
+  </body>
+    
+{% endblock %}
