@@ -5,7 +5,7 @@ from flask.ext.moment import Moment
 from flask.ext.wtf import Form
 from wtforms import StringField, SubmitField, SelectField
 from wtforms.validators import Required, NumberRange, ValidationError
-from main import tk_quote
+#from main import tk_quote
 from main import black_scholes 
 from main.american_put_pricer import american_put
 from main.plot_tools import plot_line, plot_time_multilines
@@ -50,6 +50,11 @@ def index():
 @app.route('/research')
 def research():
     return render_template('research.html')
+
+@app.route('/machine_learning')
+def machine_learning():
+    return render_template('machine_learning.html')
+
 
 
 class PricerForm(Form):
@@ -214,6 +219,8 @@ def volatility():
                                 vol, 'vol_chart', 'Date', ylabels)
         session['adj_chart'] = plot_time_multilines(form.vol_date,
                           adj_close, 'adj_chart', 'Date', ylabels)
+        print session.get('adj_close')
+        print form.vol_date
 
     print session.get('tickets'), session.get('ylabels')
     return render_template('volatility.html', form=form, 

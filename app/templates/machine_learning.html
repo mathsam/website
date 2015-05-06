@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+{% block title %}Machine learning{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+  <h1>Vortex recognition and tracking</h1>
+</div>
+<div class="container">
+  <p>Vortices are ubiquitous in geophysical fluid systems. For example, the hurricanes in Earth's atmosphere, the Great Red Spot on Jupiter and the ocean rings in the Earth's oceans. However, our current understanding on the dynamics of vortex is very limited. One major obstacle in research is that it is difficult to tell computers to how identify and track the vortices. Among the fluid dynamics community, the methods to identify vortices are mostly ad hoc, and there is no consensus among the them. The tracking methods are in a more naive phase, and they are usually developed for a particular dataset and are not robust.</p>
+  
+  <p>My group and I applied the lastest advances in machine learning techniques to deal with the vortex recognition and tracking problem. We trained the Cascade Classifier, which was original developed to solve facial recognition problem, and used it to identify vortices. Furthermore, Multiple Hypothesis Tracking algorithm is used to track the movement of the individual vortices. Together, we achieved good results in the regonition and tracking task.</p>
+  
+  <p>We also developed a helper program written in Python with a Graphical User Interface to facilitate preparing the train samples. It can read in NetCDF file, visualize the field, and then the user can crop the vortices from the field, whose positions are outputted. 
+  </p>
+
+  <h2>Source code: <a href=https://github.com/mathsam/vortex_tracker><small>github.com/mathsam/vortex_tracker</small></a></h2>
+  <div class="thumbnail">
+    <img src="{{ url_for('static',filename="vortex_recog.png") }}">
+      <div class="caption">
+        <p>Recognized vortices from a fluid dynamics simulation.</p>
+      </div>
+  </div>
+
+
+</div><!-- container -->
+{% endblock %}
